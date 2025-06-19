@@ -21,7 +21,7 @@ export class CarManager {
 
 for (let i = 0; i < gameSettings.totalCars; i++) {
 	const roadOffset = Phaser.Math.FloatBetween(-0.8, 0.8);
-  const playerZ = this.scene.player?.trackPosition ?? 0;
+  const playerZ = (this.scene.player && this.scene.player.trackPosition) || 0;
   const trackPosition = playerZ + Phaser.Math.Between(300, 2000);
   const spriteString = this.getRandomCarType();
 	const speed = Phaser.Math.Between(gameSettings.maxSpeed * 0.2, gameSettings.maxSpeed * 0.8);
