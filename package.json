@@ -1,5 +1,5 @@
 {
-  "name": "phaser-driver",
+  "name": "highway-merge",
   "version": "0.8.0",
   "description": "Outrun style driving game in Phaser 3",
   "main": "index.js",
@@ -11,21 +11,21 @@
   "browserslist": "> 1%, not dead",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pinkkis/phaser-driver.git"
+    "url": "git+https://github.com/johnzilla/highway-merge.git"
   },
-  "keywords": ["phaser", "game", "driving", "outrun"],
-  "author": "Kristian Koivisto-Kokko <pinkkis@gmail.com> (http://pinkkis.com/)",
+  "keywords": ["phaser", "game", "driving", "outrun", "highway", "merge"],
+  "author": "John Turner <johnturner@gmail.com> (http://johnturner.com/)",
   "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/pinkkis/phaser-minesweeper/blob/master/LICENSE.md"
+      "url": "https://github.com/johnzilla/highway-merge/blob/master/LICENSE.md"
     }
   ],
   "bugs": {
-    "url": "https://github.com/pinkkis/phaser-driver/issues"
+    "url": "https://github.com/johnzilla/highway-merge/issues"
   },
-  "homepage": "https://github.com/pinkkis/phaser-driver#readme",
+  "homepage": "https://github.com/johnzilla/highway-merge#readme",
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
