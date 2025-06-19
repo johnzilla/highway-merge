@@ -33,7 +33,25 @@ for (let i = 0; i < gameSettings.totalCars; i++) {
 	if (shouldMerge) {
 		// Spawn farther off road for merging
 		initialOffset = roadOffset < 0 ? -2.0 : 2.0; // left or right side merge
+	}
+
+	const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
+	const carSegment = this.road.findSegmentByZ(trackPosition);
+
+	this.cars.add(car);
+	carSegment.cars.add(car);
+
+	// Tween to merge onto the road if needed
+	if (shouldMerge) {
+		this.scene.tweens.add({
+			targets: car,
+			offsetX: roadOffset, // smoothly slide into chosen offset
+			duration: 2000,
+			ease: 'Sine.easeInOut'
+		});
+	}
 }
+
 
 	const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
 	const carSegment = this.road.findSegmentByZ(trackPosition);
