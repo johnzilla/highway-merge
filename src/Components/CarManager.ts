@@ -46,7 +46,7 @@ for (let i = 0; i < gameSettings.totalCars; i++) {
 	if (shouldMerge) {
 		this.scene.tweens.add({
 			targets: car,
-			offsetX: roadOffset, // smoothly slide into chosen offset
+			offset: roadOffset, // smoothly slide into chosen offset
 			duration: 2000,
 			ease: 'Sine.easeInOut'
 		});
