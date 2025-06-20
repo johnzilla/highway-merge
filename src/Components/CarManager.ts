@@ -19,41 +19,42 @@ export class CarManager {
 	public resetCars(): void {
 		this.destroy();
 
-for (let i = 0; i < gameSettings.totalCars; i++) {
-	const roadOffset = Phaser.Math.FloatBetween(-0.8, 0.8);
-  const playerZ = (this.scene.player && this.scene.player.trackPosition) || 0;
-  const trackPosition = playerZ + Phaser.Math.Between(300, 2000);
-  const spriteString = this.getRandomCarType();
-	const speed = Phaser.Math.Between(gameSettings.maxSpeed * 0.2, gameSettings.maxSpeed * 0.8);
+		for (let i = 0; i < gameSettings.totalCars; i++) {
+			const roadOffset = Phaser.Math.FloatBetween(-0.8, 0.8);
+			const playerZ = (this.scene.player && this.scene.player.trackPosition) || 0;
+			const trackPosition = playerZ + Phaser.Math.Between(300, 2000);
+			const spriteString = this.getRandomCarType();
+			const speed = Phaser.Math.Between(gameSettings.maxSpeed * 0.2, gameSettings.maxSpeed * 0.8);
 
-	// --- Add merge behavior for ~25% of cars ---
-	const shouldMerge = Phaser.Math.Between(0, 3) === 0; // 25% chance
+			// --- Add merge behavior for ~25% of cars ---
+			const shouldMerge = Phaser.Math.Between(0, 3) === 0; // 25% chance
 
-const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
-const carSegment = this.road.findSegmentByZ(trackPosition);
+			let initialOffset = roadOffset;
+			if (shouldMerge) {
+				initialOffset = roadOffset < 0 ? -2.0 : 2.0; // spawn off-road for merge
+			}
 
-this.cars.add(car);
-carSegment.cars.add(car);
+			const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
+			const carSegment = this.road.findSegmentByZ(trackPosition);
 
-// Now assign merge flags
-if (shouldMerge) {
-	car.isMerging = true;
-	car.targetOffset = roadOffset;
-}
+			this.cars.add(car);
+			carSegment.cars.add(car);
 
-  // Tween to merge onto the road if needed
-	if (shouldMerge) {
-		this.scene.tweens.add({
-			targets: car,
-			offset: roadOffset, // smoothly slide into chosen offset
-			duration: 2000,
-			ease: 'Sine.easeInOut',
-      onComplete: () => {
-		    car.hasMerged = true;
-	    }
-		});
-	}
-}
+			if (shouldMerge) {
+				car.isMerging = true;
+				car.targetOffset = roadOffset;
+
+				this.scene.tweens.add({
+					targets: car,
+					offset: roadOffset,
+					duration: 2000,
+					ease: 'Sine.easeInOut',
+					onComplete: () => {
+						car.hasMerged = true;
+					}
+				});
+			}
+		}
 	}
 
 	public update(delta: number, playerSegment: TrackSegment, playerOffset: number): void {
@@ -73,20 +74,19 @@ if (shouldMerge) {
 	}
 
 	public hideAll(): void {
-		this.cars.forEach( (car: Car) => {
+		this.cars.forEach((car: Car) => {
 			car.sprite.setVisible(false);
 		});
 	}
 
 	public destroy(): void {
-		this.cars.forEach( (car: Car) => car.destroy() );
+		this.cars.forEach((car: Car) => car.destroy());
 		this.cars.clear();
 	}
 
 	private getRandomCarType(): string {
 		const availableSprites = ['car-army', 'car-yellow', 'car-red', 'car-green', 'car-blue'];
 		const rndIndex = Phaser.Math.Between(0, availableSprites.length - 1);
-
 		return availableSprites[rndIndex];
 	}
 }
