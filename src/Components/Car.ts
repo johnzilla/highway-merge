@@ -32,24 +32,28 @@ export class Car {
 		this.updateAngleFrame(carSegment, playerSegment, playerOffset);
 	}
 
-	public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number = 0) {
-		this.sprite.setPosition(x, y);
-		this.sprite.setScale(this.scale * scale);
-		this.sprite.setDepth(10 + scale); // draw order
+public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number = 0) {
+	const roadCenterX = this.scene.scale.width / 2;
+	const roadHalfWidth = gameSettings.roadWidth * scale / 2;
 
-		if (!this.sprite.visible) {
-			this.sprite.setVisible(true);
-		}
+	const screenX = roadCenterX + this.offset * roadHalfWidth;
 
-		// calculate clipping behind hills
-		if (y > segmentClip) {
-			const clipped = (y - segmentClip) / this.sprite.scaleY;
-			const cropY = this.sprite.height - clipped;
-			this.sprite.setCrop(0, 0, this.sprite.width, cropY);
-		} else {
-			this.sprite.setCrop();
-		}
+	this.sprite.setPosition(screenX, y);
+	this.sprite.setScale(this.scale * scale);
+	this.sprite.setDepth(10 + scale);
+
+	if (!this.sprite.visible) {
+		this.sprite.setVisible(true);
 	}
+
+	if (y > segmentClip) {
+		const clipped = (y - segmentClip) / this.sprite.scaleY;
+		const cropY = this.sprite.height - clipped;
+		this.sprite.setCrop(0, 0, this.sprite.width, cropY);
+	} else {
+		this.sprite.setCrop();
+	}
+}
 
 	public updateAngleFrame(carSegment: TrackSegment, playerSegment: TrackSegment, playerOffset: number): void {
 		const roadDistance = Math.abs(carSegment.index - playerSegment.index);
