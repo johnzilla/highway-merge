@@ -48,7 +48,10 @@ for (let i = 0; i < gameSettings.totalCars; i++) {
 			targets: car,
 			offset: roadOffset, // smoothly slide into chosen offset
 			duration: 2000,
-			ease: 'Sine.easeInOut'
+			ease: 'Sine.easeInOut',
+      onComplete: () => {
+		    car.hasMerged = true;
+	    }
 		});
 	}
 }
