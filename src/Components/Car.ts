@@ -14,7 +14,7 @@ export class Car {
 	public percent: number = 0;
 	public scale: number = 1500;
 
-	// New fields to support merging
+	// Merge behavior flags
 	public isMerging: boolean = false;
 	public hasMerged: boolean = false;
 	public targetOffset: number = 0;
@@ -37,7 +37,7 @@ export class Car {
 		this.updateAngleFrame(carSegment, playerSegment, playerOffset);
 	}
 
-	public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number = 0) {
+	public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number = 0): void {
 		const roadCenterX = this.scene.scale.width / 2;
 		const roadHalfWidth = gameSettings.roadWidth * scale / 2;
 		const screenX = roadCenterX + this.offset * roadHalfWidth;
@@ -61,4 +61,50 @@ export class Car {
 
 	public updateAngleFrame(carSegment: TrackSegment, playerSegment: TrackSegment, playerOffset: number): void {
 		const roadDistance = Math.abs(carSegment.index - playerSegment.index);
-		const offsetDistance =
+		const offsetDistance = Math.abs(playerOffset - this.offset);
+		const isLeft = playerOffset > this.offset;
+
+		if (roadDistance < 20 && offsetDistance > 0.3) {
+			this.sprite.setFrame(1);
+			this.sprite.flipX = !isLeft;
+		} else {
+			this.sprite.setFrame(0);
+		}
+	}
+
+	public updateOffset(delta: number, carSegment: TrackSegment, playerSegment: TrackSegment): void {
+		const lookahead = 50;
+
+		// Skip AI if merging in progress
+		if (this.isMerging && !this.hasMerged) return;
+
+		const player = this.scene.player;
+
+		// car not visible, skip AI
+		if (carSegment.index - playerSegment.index > gameSettings.drawDistance) return;
+
+		for (let i = 0; i < lookahead; i++) {
+			const segment = this.road.segments[(carSegment.index + i) % this.road.segments.length];
+
+			if (segment === playerSegment && this.speed > player.speed && Util.overlapPlayer(player, this)) {
+				this.offset = Util.interpolate(this.offset, player.x < this.offset ? 1 : -1, delta * 0.1);
+			}
+
+			segment.cars.forEach((otherCar: Car) => {
+				if (otherCar === this) return;
+
+				if (this.speed > otherCar.speed && Util.overlapSprite(otherCar.sprite, this.sprite)) {
+					this.offset = Util.interpolate(this.offset, otherCar.offset < this.offset ? 1 : -1, delta * 0.1);
+				}
+			});
+		}
+
+		if (Math.abs(this.offset) > 0.9) {
+			this.offset = Util.interpolate(this.offset, 0, delta);
+		}
+	}
+
+	public destroy(): void {
+		this.sprite.destroy();
+	}
+}
