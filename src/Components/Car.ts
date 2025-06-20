@@ -82,13 +82,13 @@ public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number
 		for (let i = 0; i < lookahead; i++) {
 			const segment = this.road.segments[ (carSegment.index + i) % this.road.segments.length];
 
-			if (segment === playerSegment && this.speed > player.speed && Util.overlapPlayer(player, this)) {
-				if (player.x < this.offset) {
-					this.offset = Util.interpolate(this.offset, 1, delta * 0.1);
-				} else {
-					this.offset = Util.interpolate(this.offset, -1, delta * 0.1);
-				}
-			}
+      if (!this.hasMerged && segment === playerSegment && this.speed > player.speed && Util.overlapPlayer(player, this)) {
+	      if (player.x < this.offset) {
+		      this.offset = Util.interpolate(this.offset, 1, delta * 0.1);
+	      } else {
+		      this.offset = Util.interpolate(this.offset, -1, delta * 0.1);
+	      }
+      }
 
 			if (segment.cars.size) {
 				segment.cars.forEach((car: Car) => {
