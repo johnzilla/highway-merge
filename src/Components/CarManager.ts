@@ -32,15 +32,9 @@ for (let i = 0; i < gameSettings.totalCars; i++) {
 	let initialOffset = roadOffset;
 
 	if (shouldMerge) {
-		// Spawn farther off road for merging
-		initialOffset = roadOffset < 0 ? -2.0 : 2.0; // left or right side merge
+		car.isMerging = true;
+		car.targetOffset = roadOffset;
 	}
-
-	const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
-	const carSegment = this.road.findSegmentByZ(trackPosition);
-
-	this.cars.add(car);
-	carSegment.cars.add(car);
 
 	// Tween to merge onto the road if needed
 	if (shouldMerge) {
