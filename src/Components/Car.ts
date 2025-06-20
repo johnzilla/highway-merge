@@ -94,7 +94,7 @@ public draw(x: number = 0, y: number = 0, scale: number = 1, segmentClip: number
 				segment.cars.forEach((car: Car) => {
 					if (car === this) { return; }
 
-					if (this.speed > car.speed && Util.overlapSprite(car.sprite, this.sprite)) {
+          if (!this.hasMerged && this.speed > car.speed && Util.overlapSprite(car.sprite, this.sprite)) {
 						if (car.offset < this.offset) {
 							this.offset = Util.interpolate(this.offset, 1, delta * 0.1);
 						} else {
