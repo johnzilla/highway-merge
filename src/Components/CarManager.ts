@@ -29,14 +29,19 @@ for (let i = 0; i < gameSettings.totalCars; i++) {
 	// --- Add merge behavior for ~25% of cars ---
 	const shouldMerge = Phaser.Math.Between(0, 3) === 0; // 25% chance
 
-	let initialOffset = roadOffset;
+const car = new Car(this.scene, this.road, initialOffset, trackPosition, spriteString, speed);
+const carSegment = this.road.findSegmentByZ(trackPosition);
 
-	if (shouldMerge) {
-		car.isMerging = true;
-		car.targetOffset = roadOffset;
-	}
+this.cars.add(car);
+carSegment.cars.add(car);
 
-	// Tween to merge onto the road if needed
+// Now assign merge flags
+if (shouldMerge) {
+	car.isMerging = true;
+	car.targetOffset = roadOffset;
+}
+
+  // Tween to merge onto the road if needed
 	if (shouldMerge) {
 		this.scene.tweens.add({
 			targets: car,
